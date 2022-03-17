@@ -3,6 +3,7 @@ async function setNetRef(ref) {
   netRef = ref;
 }
 
+let charac_writeable;
 async function ConnectBluetooth() {
   if(!navigator.bluetooth) {
     console.error("No access to bluetooth");
@@ -25,6 +26,9 @@ async function ConnectBluetooth() {
   let charac_deviceTime = await service.getCharacteristic('00000002-5239-4069-806d-7e5c97393755');
   console.log({charac_deviceTime});
 
+  charac_writeable = await service.getCharacteristic('00000004-5239-4069-806d-7e5c97393755');
+  console.log({charac_writeable});
+
   charac_deviceTime.addEventListener('characteristicvaluechanged', (event) => {
     console.log(event.target);
 
@@ -38,4 +42,14 @@ async function ConnectBluetooth() {
 
 //  console.log((await charac_deviceTime.readValue()).getFloat32(0, true));
   await charac_deviceTime.startNotifications();
+}
+
+async function WriteToCharac(value) {
+  if(!charac_writeable) {
+    console.error(`Connect Device first`);
+    return;
+  }
+  console.log(`Writing '${value}' to ${charac_writeable}'`)
+  const encoder = new TextEncoder('utf-8')
+  charac_writeable.writeValue(encoder.encode(value));
 }

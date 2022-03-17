@@ -7,9 +7,16 @@
 <div>
   @Message
 </div>
+<div>
+  <p>
+    Value to Write: <input @bind=ValueToWrite />
+    <button @onclick="SendCharac">SendCharac</button>
+  </p>
+</div>
 
 @code{
   protected string Message = "Nothing yet";
+  protected string ValueToWrite = "";
   private DotNetObjectReference<Bluetooth>? objRef;
 
   protected override void OnInitialized()
@@ -21,6 +28,11 @@
   {
     await JS.InvokeVoidAsync("setNetRef", objRef);
     await JS.InvokeVoidAsync("ConnectBluetooth");
+  }
+
+  public async Task SendCharac()
+  {
+    await JS.InvokeVoidAsync("WriteToCharac", ValueToWrite);
   }
 
   [JSInvokable]
