@@ -1,12 +1,38 @@
 @page "/blue"
+@implements IDisposable
 @inject IJSRuntime JS
 
 <h3>Bluetooth</h3>
 <button @onclick="GetDevices">GetDevices</button>
+<div>
+  @Message
+</div>
 
 @code{
+  protected string Message = "Nothing yet";
+  private DotNetObjectReference<Bluetooth>? objRef;
+
+  protected override void OnInitialized()
+  {
+    objRef = DotNetObjectReference.Create(this);
+  }
+
   public async Task GetDevices()
   {
+    await JS.InvokeVoidAsync("setNetRef", objRef);
     await JS.InvokeVoidAsync("ConnectBluetooth");
+  }
+
+  [JSInvokable]
+  public async Task Status(string value)
+  {
+    Console.WriteLine($"Status '{value}'");
+    Message = value;
+    StateHasChanged();
+  }
+
+  public void Dispose()
+  {
+    objRef?.Dispose();
   }
 }

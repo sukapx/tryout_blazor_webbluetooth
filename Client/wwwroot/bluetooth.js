@@ -1,3 +1,8 @@
+let netRef;
+async function setNetRef(ref) {
+  netRef = ref;
+}
+
 async function ConnectBluetooth() {
   if(!navigator.bluetooth) {
     console.error("No access to bluetooth");
@@ -25,6 +30,10 @@ async function ConnectBluetooth() {
 
     let value = event.target.value.getFloat32(0, true);
     console.log('> Characteristic is ' + value);
+
+    if(netRef) {
+      netRef.invokeMethodAsync('Status', 'Charac is: ' + value);
+    }
   });
 
 //  console.log((await charac_deviceTime.readValue()).getFloat32(0, true));
