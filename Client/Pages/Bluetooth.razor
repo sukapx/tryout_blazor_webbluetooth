@@ -1,0 +1,12 @@
+@page "/blue"
+@inject IJSRuntime JS
+
+<h3>Bluetooth</h3>
+<button @onclick="GetDevices">GetDevices</button>
+
+@code{
+  public async Task GetDevices()
+  {
+    await JS.InvokeVoidAsync("ConnectBluetooth");
+  }
+}
